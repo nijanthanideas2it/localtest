@@ -2,15 +2,15 @@
 
 ## Prerequisites
 - Render.com account
-- PostgreSQL database already deployed on Render
+- PostgreSQL database already deployed on Render ✅
 - Git repository with your code
 
 ## Step 1: Prepare Your Repository
 
 Make sure your repository has the following files in the `backend/` directory:
-- `requirements.txt` - Dependencies
-- `Procfile` - Start command
-- `app/main.py` - Main application file
+- `requirements.txt` - Dependencies ✅
+- `Procfile` - Start command ✅
+- `app/main.py` - Main application file ✅
 
 ## Step 2: Deploy to Render.com
 
@@ -34,7 +34,7 @@ Make sure your repository has the following files in the `backend/` directory:
 4. **Environment Variables**
    Add the following environment variables:
    ```
-   DATABASE_URL=your_postgres_connection_string
+   DATABASE_URL=postgresql://project_management_eaoe_user:EnNCBCl069GPZUOHFrAZBN9qO2NzNhCv@dpg-d285ofc9c44c73a3ng5g-a.oregon-postgres.render.com/project_management_eaoe
    SECRET_KEY=your_secret_key_here
    DEBUG=false
    HOST=0.0.0.0
@@ -47,20 +47,14 @@ Make sure your repository has the following files in the `backend/` directory:
    PASSWORD_MIN_LENGTH=8
    ```
 
-5. **Database Connection**
-   - In the "Environment Variables" section
-   - Click "Link Database"
-   - Select your existing PostgreSQL database
-   - This will automatically set the `DATABASE_URL`
-
-6. **Deploy**
+5. **Deploy**
    - Click "Create Web Service"
    - Render will build and deploy your application
 
 ### Option B: Using render.yaml (Advanced)
 
 1. **Update render.yaml**
-   - Modify the `render.yaml` file with your database name
+   - The `render.yaml` file is already configured with your database
    - Update `ALLOWED_HOSTS` with your frontend domain
 
 2. **Deploy**
@@ -97,8 +91,9 @@ ALLOWED_HOSTS=["https://your-frontend-app.onrender.com","http://localhost:3000"]
    - Verify Python version compatibility
 
 2. **Database Connection Issues**
-   - Verify `DATABASE_URL` is correctly set
-   - Check if database is accessible from Render
+   - ✅ **FIXED**: Database URL is configured correctly
+   - Verify database is accessible from Render
+   - Ensure database is running and accessible
 
 3. **CORS Issues**
    - Update `ALLOWED_HOSTS` with correct frontend URL
@@ -112,7 +107,7 @@ ALLOWED_HOSTS=["https://your-frontend-app.onrender.com","http://localhost:3000"]
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://user:pass@host:port/db` |
+| `DATABASE_URL` | PostgreSQL connection string | ✅ Configured: `postgresql://project_management_eaoe_user:...@dpg-d285ofc9c44c73a3ng5g-a.oregon-postgres.render.com/project_management_eaoe` |
 | `SECRET_KEY` | JWT secret key | `your-secret-key-here` |
 | `DEBUG` | Debug mode | `false` |
 | `ALLOWED_HOSTS` | CORS allowed origins | `["https://frontend.onrender.com"]` |
