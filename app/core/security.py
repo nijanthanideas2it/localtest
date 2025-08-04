@@ -8,8 +8,6 @@ from datetime import datetime, timedelta, timezone
 import hashlib
 import hmac
 
-from app.core.config import settings
-
 
 class SecurityUtils:
     """Additional security utilities for the application."""
