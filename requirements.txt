@@ -9,7 +9,7 @@ passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 
 pydantic==2.5.0
-pydantic-settings==2.6.1
+pydantic-settings==0.2.5
 email-validator==2.1.0
 
 Pillow==10.0.1
