@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, field_validator, Field
 
-from app.core.config import settings
+from app.core.auth_config import get_password_min_length
 
 
 class UserLoginRequest(BaseModel):
@@ -17,7 +17,7 @@ class UserLoginRequest(BaseModel):
 class UserRegisterRequest(BaseModel):
     """User registration request model."""
     email: EmailStr = Field(..., description="User email address")
-    password: str = Field(..., min_length=settings.PASSWORD_MIN_LENGTH, description="User password")
+    password: str = Field(..., min_length=get_password_min_length(), description="User password")
     first_name: str = Field(..., min_length=1, max_length=50, description="User first name")
     last_name: str = Field(..., min_length=1, max_length=50, description="User last name")
     role: str = Field(default="Developer", description="User role")
@@ -45,13 +45,13 @@ class ForgotPasswordRequest(BaseModel):
 class ResetPasswordRequest(BaseModel):
     """Reset password request model."""
     token: str = Field(..., description="Password reset token")
-    new_password: str = Field(..., min_length=settings.PASSWORD_MIN_LENGTH, description="New password")
+    new_password: str = Field(..., min_length=get_password_min_length(), description="New password")
 
 
 class ChangePasswordRequest(BaseModel):
     """Change password request model."""
     current_password: str = Field(..., description="Current password")
-    new_password: str = Field(..., min_length=settings.PASSWORD_MIN_LENGTH, description="New password")
+    new_password: str = Field(..., min_length=get_password_min_length(), description="New password")
 
 
 class EmailVerificationRequest(BaseModel):
