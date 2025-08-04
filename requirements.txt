@@ -17,6 +17,7 @@ bcrypt==4.0.1
 # Data validation (all have pre-built wheels)
 pydantic==2.5.0
 email-validator==2.1.0
+pydantic-settings==0.4.0
 
 # File handling (all have pre-built wheels)
 Pillow==10.0.1
