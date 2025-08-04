@@ -12,7 +12,23 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import RequestResponseEndpoint
 from starlette.types import ASGIApp
 
-from app.core.config import settings
+from app.core.security_config import (
+    get_rate_limit_enabled,
+    get_rate_limit_requests_per_minute,
+    get_rate_limit_requests_per_hour,
+    get_rate_limit_burst_size,
+    get_security_headers_enabled,
+    get_content_security_policy,
+    get_strict_transport_security,
+    get_x_frame_options,
+    get_x_content_type_options,
+    get_x_xss_protection,
+    get_referrer_policy,
+    get_input_sanitization_enabled,
+    get_max_request_size,
+    get_max_header_size,
+    get_allowed_hosts
+)
 from app.core.security import SecurityUtils
 
 logger = logging.getLogger(__name__)
@@ -29,7 +45,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         """Process request with rate limiting."""
-        if not settings.RATE_LIMIT_ENABLED:
+        if not get_rate_limit_enabled():
             return await call_next(request)
         
         # Get client identifier
@@ -74,9 +90,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         key = f"{client_id}:{path}"
         
         # Get current limits
-        minute_limit = settings.RATE_LIMIT_REQUESTS_PER_MINUTE
-        hour_limit = settings.RATE_LIMIT_REQUESTS_PER_HOUR
-        burst_limit = settings.RATE_LIMIT_BURST_SIZE
+        minute_limit = get_rate_limit_requests_per_minute()
+        hour_limit = get_rate_limit_requests_per_hour()
+        burst_limit = get_rate_limit_burst_size()
         
         # Initialize client data if not exists
         if key not in self.rate_limit_store:
@@ -153,21 +169,21 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         """Process request with security headers."""
         response = await call_next(request)
         
-        if not settings.SECURITY_HEADERS_ENABLED:
+        if not get_security_headers_enabled():
             return response
         
         # Add security headers
-        response.headers["X-Content-Type-Options"] = settings.X_CONTENT_TYPE_OPTIONS
-        response.headers["X-Frame-Options"] = settings.X_FRAME_OPTIONS
-        response.headers["X-XSS-Protection"] = settings.X_XSS_PROTECTION
-        response.headers["Referrer-Policy"] = settings.REFERRER_POLICY
+        response.headers["X-Content-Type-Options"] = get_x_content_type_options()
+        response.headers["X-Frame-Options"] = get_x_frame_options()
+        response.headers["X-XSS-Protection"] = get_x_xss_protection()
+        response.headers["Referrer-Policy"] = get_referrer_policy()
         
         # Add HSTS header (only for HTTPS)
         if request.url.scheme == "https":
-            response.headers["Strict-Transport-Security"] = settings.STRICT_TRANSPORT_SECURITY
+            response.headers["Strict-Transport-Security"] = get_strict_transport_security()
         
         # Add Content Security Policy
-        response.headers["Content-Security-Policy"] = settings.CONTENT_SECURITY_POLICY
+        response.headers["Content-Security-Policy"] = get_content_security_policy()
         
         # Add additional security headers
         response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
@@ -184,7 +200,7 @@ class InputSanitizationMiddleware(BaseHTTPMiddleware):
     
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         """Process request with input sanitization."""
-        if not settings.INPUT_SANITIZATION_ENABLED:
+        if not get_input_sanitization_enabled():
             return await call_next(request)
         
         # Check request size
@@ -192,7 +208,7 @@ class InputSanitizationMiddleware(BaseHTTPMiddleware):
         if content_length:
             try:
                 size = int(content_length)
-                if size > settings.MAX_REQUEST_SIZE:
+                if size > get_max_request_size():
                     return JSONResponse(
                         status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                         content={"detail": "Request too large"}
@@ -204,7 +220,7 @@ class InputSanitizationMiddleware(BaseHTTPMiddleware):
         total_header_size = sum(
             len(name) + len(value) for name, value in request.headers.items()
         )
-        if total_header_size > settings.MAX_HEADER_SIZE:
+        if total_header_size > get_max_header_size():
             return JSONResponse(
                 status_code=status.HTTP_431_REQUEST_HEADER_FIELDS_TOO_LARGE,
                 content={"detail": "Request headers too large"}
@@ -302,15 +318,15 @@ class SecurityMiddleware:
 def create_security_middleware(app: ASGIApp) -> ASGIApp:
     """Create and configure security middleware."""
     # Add rate limiting
-    if settings.RATE_LIMIT_ENABLED:
+    if get_rate_limit_enabled():
         app.add_middleware(RateLimitMiddleware)
     
     # Add security headers
-    if settings.SECURITY_HEADERS_ENABLED:
+    if get_security_headers_enabled():
         app.add_middleware(SecurityHeadersMiddleware)
     
     # Add input sanitization
-    if settings.INPUT_SANITIZATION_ENABLED:
+    if get_input_sanitization_enabled():
         app.add_middleware(InputSanitizationMiddleware)
     
     # Add request logging
