@@ -9,12 +9,12 @@ from typing import AsyncGenerator, Generator
 import asyncio
 from functools import wraps
 
-from app.core.config import settings
+from app.db.config import get_database_url, get_database_echo
 
 # Create sync engine for all operations
 sync_engine = create_engine(
-    settings.DATABASE_URL,
-    echo=settings.DATABASE_ECHO,
+    get_database_url(),
+    echo=get_database_echo(),
     pool_pre_ping=True,
     pool_recycle=300,
     pool_size=10,
