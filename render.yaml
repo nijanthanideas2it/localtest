@@ -9,9 +9,7 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: DATABASE_URL
-        fromDatabase:
-          name: project-management-db
-          property: connectionString
+        value: "postgresql://project_management_eaoe_user:EnNCBCl069GPZUOHFrAZBN9qO2NzNhCv@dpg-d285ofc9c44c73a3ng5g-a.oregon-postgres.render.com/project_management_eaoe"
       - key: SECRET_KEY
         generateValue: true
       - key: DEBUG
