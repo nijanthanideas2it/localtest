@@ -16,12 +16,19 @@ passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 
 # Data validation and settings
-pydantic==2.11.7
+pydantic[email]==2.11.7
 pydantic-settings==2.10.1
+email-validator==2.1.0
 
 # Utilities
 python-multipart==0.0.20
 python-dotenv==1.1.1
+
+# Additional deployment dependencies
+typing-extensions>=4.0.0
+
+# Ensure email validation works
+dnspython>=2.0.0
 
 # Note: asyncpg is temporarily disabled due to Python 3.13 compatibility issues
 # asyncpg==0.28.0 
