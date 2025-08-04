@@ -11,7 +11,13 @@ from app.db.database import AsyncSessionWrapper
 
 from app.core.auth import AuthUtils, add_to_blacklist, get_token_from_header
 from app.core.security import SecurityUtils
-from app.core.config import settings
+from app.core.auth_config import (
+    get_secret_key,
+    get_algorithm,
+    get_access_token_expire_minutes,
+    get_refresh_token_expire_days,
+    get_password_min_length
+)
 from app.core.dependencies import get_current_user, get_current_user_optional
 from app.db.database import get_db
 from app.models.user import User
@@ -145,7 +151,7 @@ async def login(
             access_token=access_token,
             refresh_token=refresh_token,
             token_type="bearer",
-            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            expires_in=get_access_token_expire_minutes() * 60,
             user=user_response
         )
         
@@ -284,7 +290,7 @@ async def refresh_token(
         token_data = TokenRefreshResponse(
             access_token=access_token,
             token_type="bearer",
-            expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+            expires_in=get_access_token_expire_minutes() * 60
         )
         
         return RefreshResponse(
