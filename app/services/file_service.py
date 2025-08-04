@@ -17,7 +17,7 @@ import aiofiles
 from sqlalchemy.orm import Session
 from sqlalchemy import and_, or_, func, desc
 
-from app.core.config import settings
+
 from app.models.file import File
 from app.models.file_permission import FilePermission, FileShare
 from app.models.file_version import FileVersion
