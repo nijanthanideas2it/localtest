@@ -5,13 +5,13 @@ from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-from app.core.config import settings
+from app.core.auth_config import get_password_min_length
 
 
 class UserCreateRequest(BaseModel):
     """User creation request model."""
     email: EmailStr = Field(..., description="User email address")
-    password: str = Field(..., min_length=settings.PASSWORD_MIN_LENGTH, description="User password")
+    password: str = Field(..., min_length=get_password_min_length(), description="User password")
     first_name: str = Field(..., min_length=1, max_length=50, description="User first name")
     last_name: str = Field(..., min_length=1, max_length=50, description="User last name")
     role: str = Field(default="Developer", description="User role")
