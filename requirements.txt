@@ -1,20 +1,32 @@
+# Production dependencies for Project Management Dashboard API
+# Updated to use compatible versions to avoid dependency conflicts
+
+# Core FastAPI (all have pre-built wheels)
 fastapi==0.104.1
 uvicorn==0.24.0
 
+# Database (all have pre-built wheels)
 sqlalchemy==2.0.23
 psycopg2-binary==2.9.9
 
+# Authentication (all have pre-built wheels)
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 
-pydantic==2.5.0
-pydantic-settings==2.5.1
-PyYAML==5.3.1
+# Data validation (compatible versions)
+pydantic==2.7.0
+pydantic-settings==2.1.0
 email-validator==2.1.0
 
+# File handling (all have pre-built wheels)
 Pillow==10.0.1
 aiofiles==23.2.1
 
+# Utilities (all have pre-built wheels)
 python-multipart==0.0.6
 python-dotenv==1.0.0
+
+# Note: Removed problematic packages that might require building from source
+# Note: asyncpg is temporarily disabled due to Python 3.13 compatibility issues
+# asyncpg==0.28.0 
