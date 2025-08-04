@@ -6,7 +6,6 @@ from fastapi import WebSocket, HTTPException, status
 from jose import jwt
 from datetime import datetime, timezone
 
-from app.core.config import settings
 from app.core.auth import AuthUtils
 from app.models.user import User
 
