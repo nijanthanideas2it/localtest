@@ -9,7 +9,13 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import HTTPException, status
 
-from app.core.config import settings
+from app.core.auth_config import (
+    get_secret_key,
+    get_algorithm,
+    get_access_token_expire_minutes,
+    get_refresh_token_expire_days,
+    get_password_min_length
+)
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -65,14 +71,14 @@ class AuthUtils:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
             expire = datetime.now(timezone.utc) + timedelta(
-                minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+                minutes=get_access_token_expire_minutes()
             )
         
         to_encode.update({"exp": expire, "type": "access"})
         encoded_jwt = jwt.encode(
             to_encode, 
-            settings.SECRET_KEY, 
-            algorithm=settings.ALGORITHM
+            get_secret_key(), 
+            algorithm=get_algorithm()
         )
         return encoded_jwt
     
@@ -96,14 +102,14 @@ class AuthUtils:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
             expire = datetime.now(timezone.utc) + timedelta(
-                days=settings.REFRESH_TOKEN_EXPIRE_DAYS
+                days=get_refresh_token_expire_days()
             )
         
         to_encode.update({"exp": expire, "type": "refresh"})
         encoded_jwt = jwt.encode(
             to_encode, 
-            settings.SECRET_KEY, 
-            algorithm=settings.ALGORITHM
+            get_secret_key(), 
+            algorithm=get_algorithm()
         )
         return encoded_jwt
     
@@ -125,8 +131,8 @@ class AuthUtils:
         try:
             payload = jwt.decode(
                 token, 
-                settings.SECRET_KEY, 
-                algorithms=[settings.ALGORITHM]
+                get_secret_key(), 
+                algorithms=[get_algorithm()]
             )
             
             # Check token type
@@ -169,7 +175,7 @@ class AuthUtils:
         Returns:
             True if password meets requirements, False otherwise
         """
-        if len(password) < settings.PASSWORD_MIN_LENGTH:
+        if len(password) < get_password_min_length():
             return False
         
         # Check for at least one uppercase letter
