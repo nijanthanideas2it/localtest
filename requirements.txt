@@ -24,6 +24,10 @@ email-validator==2.1.0
 python-multipart==0.0.20
 python-dotenv==1.1.1
 
+# File processing and image handling
+Pillow==10.1.0
+aiofiles==23.2.1
+
 # Additional deployment dependencies
 typing-extensions>=4.0.0
 
