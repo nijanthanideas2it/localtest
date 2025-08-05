@@ -27,7 +27,7 @@ from app.api.files import router as files_router
 from app.api.audit import router as audit_router
 from app.api.websocket import router as websocket_router
 from app.api.reports import router as reports_router
-
+from starlette.middleware.cors import ALL_METHODS  # <-- Add this
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -37,7 +37,6 @@ async def lifespan(app: FastAPI):
     Args:
         app: FastAPI application instance
     """
-    # Startup
     print("Starting up Project Management Dashboard API...")
     try:
         await init_db()
@@ -48,7 +47,6 @@ async def lifespan(app: FastAPI):
     
     yield
     
-    # Shutdown
     print("Shutting down Project Management Dashboard API...")
     try:
         await close_db()
@@ -67,12 +65,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Add CORS middleware
+# ✅ Add CORS middleware (fixed and clean)
+allowed_origins = get_allowed_hosts()
+print(f"🚀 Allowed CORS origins: {allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=get_allowed_hosts(),
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=ALL_METHODS,
     allow_headers=["*"],
 )
 
@@ -83,7 +84,6 @@ create_security_middleware(app)
 try:
     app.mount("/static", StaticFiles(directory="uploads"), name="static")
 except Exception:
-    # Create uploads directory if it doesn't exist
     import os
     os.makedirs("uploads", exist_ok=True)
     app.mount("/static", StaticFiles(directory="uploads"), name="static")
@@ -114,7 +114,6 @@ async def root():
         "status": "running"
     }
 
-
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
@@ -124,23 +123,21 @@ async def health_check():
         "app_name": get_app_name()
     }
 
-
 @app.get("/info")
 async def info():
     """Application information endpoint"""
     return {
         "app_name": get_app_name(),
         "version": get_app_version(),
-        "debug": False, # settings.DEBUG is removed, so hardcode to False
-        "database_url": "***", # settings.DATABASE_URL is removed, so hardcode to "***"
+        "debug": False,
+        "database_url": "***",
     }
-
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
         "app.main:app",
-        host="0.0.0.0", # settings.HOST is removed, so hardcode to "0.0.0.0"
-        port=8000, # settings.PORT is removed, so hardcode to 8000
-        reload=False, # settings.DEBUG is removed, so hardcode to False
-    ) 
+        host="0.0.0.0",
+        port=8000,
+        reload=False,
+    )
