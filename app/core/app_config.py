@@ -35,7 +35,7 @@ def get_allowed_hosts() -> List[str]:
     """Get allowed hosts for CORS."""
     hosts_str = os.getenv(
         "ALLOWED_HOSTS",
-        '["http://localhost:3000","http://localhost:3001","http://localhost:3002","http://localhost:3003","http://localhost:3004","http://localhost:8080"]'
+        '["http://localhost:3000"]'
     )
     # Simple parsing - in production, use proper JSON parsing
     if hosts_str.startswith('[') and hosts_str.endswith(']'):
